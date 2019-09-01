@@ -15,20 +15,24 @@ sudo mkinitramfs -o /boot/init.gz
 
 Add to /boot/config.txt
 ```bash
-initramfs init.gz
+
+echo "initramfs init.gz" >> /boot/config.txt
+
 ```
 
 Test the initramfs works by rebooting. It should boot as normal.
 
 Add the following line to /etc/initramfs-tools/modules
 ```
-overlay
+echo "overlay" >> /etc/initramfs-tools/modules
 ```
 
 Copy the following files
-- hooks-overlay to /etc/initramfs-tools/hooks/
-- init-bottom-overlay to /etc/initramfs-tools/scripts/init-bottom/
+```bash
+cp hooks-overlay /etc/initramfs-tools/hooks/
+cp init-bottom-overlay /etc/initramfs-tools/scripts/init-bottom/
 
+```
 install busybox
 ```bash
 sudo apt-get install busybox
@@ -43,9 +47,11 @@ sudo mkinitramfs -o /boot/init.gz
 add to .bashrc
 
 ```bash
+echo '
 if [ ! -z "${IMCHROOTED}" ]; then
         PS1="chroot(${IMCHROOTED})\w:# "
 fi
+' >> /etc/bash.bashrc
 ```
 
 After rebooting, the root filesystem should be an overlay. If it's on tmpfs any changes 
